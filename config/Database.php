@@ -8,6 +8,7 @@ class Database
     private $pwd = "Cafateria123#";
     private $conn = null;
 
+
     public function connect()
     {
         try {

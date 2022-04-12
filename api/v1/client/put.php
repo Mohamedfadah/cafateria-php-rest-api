@@ -4,31 +4,37 @@
     header('Access-Control-Allow-Methods: POST');
 
     include_once '../../../config/Database.php';
+<<<<<<< HEAD
     include_once '../../../models/Student.php';
+=======
+    include_once '../../../models/Client.php';
+>>>>>>> 529914e4170535835682d43b563cb1fb32ca6d67
 
     if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
 		$db = new Database();
 		$db = $db->connect();
 
-		$student = new Student($db);
+		$client = new Client($db);
 
 		$data = json_decode(file_get_contents("php://input"));
 
-		$student->id = isset($data->id) ? $data->id : NULL;
-		$student->name = $data->name;
-		$student->address = $data->address;
-		$student->age = $data->age;
+		$client->id = isset($data->id) ? $data->id : NULL;
+		$client->name = $data->name;
+		$client->username = $data->username;
+        $client->pass = $data->pass;
+        $client->email = $data->email;
 
-		if(! is_null($student->id)) {
+		if(! is_null($client->id)) {
 
-			if($student->putData()) {
-			echo json_encode(array('message' => 'Student updated'));
+			if($client->putData()) {
+
+			echo json_encode(array('message' => 'Client updated'));
 			} else {
-			echo json_encode(array('message' => 'Student Not updated, try again!'));
+			echo json_encode(array('message' => 'Client Not updated, try again!'));
 			}
 		} else {
-		echo json_encode(array('message' => "Error: Student ID is missing!"));
+		echo json_encode(array('message' => "Error: Client ID is missing!"));
 		}
 	} else {
 		echo json_encode(array('message' => "Error: incorrect Method!"));
