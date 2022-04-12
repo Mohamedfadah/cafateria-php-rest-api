@@ -5,8 +5,8 @@ class Database
     private $host = "localhost";
     private $user = "root";
 
-    private $db = "cafetria";
-    private $pwd = "MOhammed1994";
+    private $db = "proj-test";
+    private $pwd = "root";
     private $conn = null;
 
     public function connect()

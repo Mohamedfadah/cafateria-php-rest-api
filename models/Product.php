@@ -1,15 +1,14 @@
 <?php
 
-class Client
+class Product
 {
     private $conn;
     
     public $id;
     public $name;
-    public $username;
-    public $pass;
-    public $email;
-
+    public $price;
+    public $status;
+    public $cat_id;
 
 
     public function __construct($db)
@@ -19,14 +18,14 @@ class Client
 
     public function fetchAll()
     {
-        $stmt = $this->conn->prepare('SELECT * FROM client');
+        $stmt = $this->conn->prepare('SELECT * FROM product');
         $stmt->execute();
         return $stmt;
     }
 
     public function fetchOne()
     {
-        $stmt = $this->conn->prepare('SELECT  * FROM client WHERE id = ?');
+        $stmt = $this->conn->prepare('SELECT  * FROM product WHERE id = ?');
         $stmt->bindParam(1, $this->id);
         $stmt->execute();
 
@@ -35,9 +34,9 @@ class Client
 
             $this->id = $row['id'];
             $this->name = $row['name'];
-            $this->username = $row['username'];
-            $this->pass = $row['pass'];
-            $this->email = $row['email'];
+            $this->price = $row['price'];
+            $this->status = $row['status'];
+            $this->cat_id = $row['cat_id'];
 
             return true;
         }
@@ -47,12 +46,12 @@ class Client
 
     public function postData()
     {
-        $stmt = $this->conn->prepare('INSERT INTO client SET name = :name, username = :username, pass = :pass, email = :email');
+        $stmt = $this->conn->prepare('INSERT INTO product SET name = :name, price = :price, status = :status, cat_id = :cat_id');
 
         $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':username', $this->username);
-        $stmt->bindParam(':pass', $this->pass);
-        $stmt->bindParam(':email', $this->email);
+        $stmt->bindParam(':price', $this->price);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->bindParam(':cat_id', $this->cat_id);
 
         if ($stmt->execute()) {
             return true;
@@ -63,12 +62,12 @@ class Client
 
     public function putData()
     {
-        $stmt = $this->conn->prepare('UPDATE client SET name = :name, username = :username, pass = :pass, email = :email WHERE id = :id');
+        $stmt = $this->conn->prepare('UPDATE product SET name = :name, price = :price, status = :status, cat_id = :cat_id WHERE id = :id');
 
         $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':username', $this->username);
-        $stmt->bindParam(':pass', $this->pass);
-        $stmt->bindParam(':email', $this->email);
+        $stmt->bindParam(':price', $this->price);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->bindParam(':cat_id', $this->cat_id);
         $stmt->bindParam(':id', $this->id);
 
         if ($stmt->execute()) {
@@ -80,7 +79,7 @@ class Client
 
     public function delete()
     {
-        $stmt = $this->conn->prepare('DELETE FROM client WHERE id = :id');
+        $stmt = $this->conn->prepare('DELETE FROM product WHERE id = :id');
         $stmt->bindParam(':id', $this->id);
 
         if ($stmt->execute()) {

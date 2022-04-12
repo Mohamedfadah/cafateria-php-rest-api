@@ -1,16 +1,12 @@
 <?php
 
-class Client
+class Category
 {
     private $conn;
     
     public $id;
     public $name;
-    public $username;
-    public $pass;
-    public $email;
-
-
+  
 
     public function __construct($db)
     {
@@ -19,14 +15,14 @@ class Client
 
     public function fetchAll()
     {
-        $stmt = $this->conn->prepare('SELECT * FROM client');
+        $stmt = $this->conn->prepare('SELECT * FROM category');
         $stmt->execute();
         return $stmt;
     }
 
     public function fetchOne()
     {
-        $stmt = $this->conn->prepare('SELECT  * FROM client WHERE id = ?');
+        $stmt = $this->conn->prepare('SELECT  * FROM category WHERE id = ?');
         $stmt->bindParam(1, $this->id);
         $stmt->execute();
 
@@ -35,9 +31,6 @@ class Client
 
             $this->id = $row['id'];
             $this->name = $row['name'];
-            $this->username = $row['username'];
-            $this->pass = $row['pass'];
-            $this->email = $row['email'];
 
             return true;
         }
@@ -47,12 +40,9 @@ class Client
 
     public function postData()
     {
-        $stmt = $this->conn->prepare('INSERT INTO client SET name = :name, username = :username, pass = :pass, email = :email');
+        $stmt = $this->conn->prepare('INSERT INTO category SET name = :name');
 
         $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':username', $this->username);
-        $stmt->bindParam(':pass', $this->pass);
-        $stmt->bindParam(':email', $this->email);
 
         if ($stmt->execute()) {
             return true;
@@ -63,12 +53,9 @@ class Client
 
     public function putData()
     {
-        $stmt = $this->conn->prepare('UPDATE client SET name = :name, username = :username, pass = :pass, email = :email WHERE id = :id');
+        $stmt = $this->conn->prepare('UPDATE category SET name = :name WHERE id = :id');
 
         $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':username', $this->username);
-        $stmt->bindParam(':pass', $this->pass);
-        $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':id', $this->id);
 
         if ($stmt->execute()) {
@@ -80,7 +67,7 @@ class Client
 
     public function delete()
     {
-        $stmt = $this->conn->prepare('DELETE FROM client WHERE id = :id');
+        $stmt = $this->conn->prepare('DELETE FROM category WHERE id = :id');
         $stmt->bindParam(':id', $this->id);
 
         if ($stmt->execute()) {

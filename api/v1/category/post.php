@@ -4,25 +4,23 @@
     header('Access-Control-Allow-Methods: POST');
 
     include_once '../../../config/Database.php';
-    include_once '../../../models/Client.php';
+    include_once '../../../models/Category.php';
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db = new Database();
         $db = $db->connect();
 
-        $client = new Client($db);
+        $category = new Category($db);
 
         $data = json_decode(file_get_contents("php://input"));
 
-        $client->name = $data->name;
-        $client->username = $data->username;
-        $client->pass = $data->pass;
-        $client->email = $data->email;
+        $category->name = $data->name;
+       
     
-        if ($client->postData()) {
-            echo json_encode(array('message' => 'Client added'));
+        if ($category->postData()) {
+            echo json_encode(array('message' => 'Category added'));
         } else {
-            echo json_encode(array('message' => 'Client Not added, try again!'));
+            echo json_encode(array('message' => 'Category Not added, try again!'));
         }
     } else {
         echo json_encode(array('message' => "Error: incorrect Method!"));

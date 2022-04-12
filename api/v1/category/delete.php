@@ -2,29 +2,30 @@
     header('Access-Control-Allow-Origin: *');
     header('Content-Type: application/json');
     header('Access-Control-Allow-Methods: POST');
+
     include_once '../../../config/Database.php';
-    include_once '../../../models/Client.php';
+    include_once '../../../models/Category.php';
 
 	if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 
 		$db = new Database();
 		$db = $db->connect();
 
-		$client = new Client($db);
+		$category = new Category($db);
 
 		$data = json_decode(file_get_contents("php://input"));
 
-		$client->id = isset($data->id) ? $data->id : NULL;
+		$category->id = isset($data->id) ? $data->id : NULL;
 
-		if(! is_null($client->id)) {
+		if(! is_null($category->id)) {
 	
-			if($client->delete()) {
-			echo json_encode(array('message' => 'Client deleted'));
+			if($category->delete()) {
+			echo json_encode(array('message' => 'Category deleted'));
 			} else {
-			echo json_encode(array('message' => 'Client Not deleted, try again!'));
+			echo json_encode(array('message' => 'Category Not deleted, try again!'));
 			}
 		} else {
-		echo json_encode(array('message' => "Error: Client ID is missing!"));
+		echo json_encode(array('message' => "Error: Category ID is missing!"));
 		}
 	} else {
 		echo json_encode(array('message' => "Error: incorrect Method!"));
