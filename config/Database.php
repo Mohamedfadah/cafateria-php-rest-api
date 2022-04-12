@@ -4,6 +4,7 @@ class Database
 {
     private $host = "localhost";
     private $user = "root";
+
     private $db = "cafetria";
     private $pwd = "MOhammed1994";
     private $conn = null;
