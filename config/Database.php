@@ -9,6 +9,7 @@ class Database
     private $pwd = "root";
     private $conn = null;
 
+
     public function connect()
     {
         try {

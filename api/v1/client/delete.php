@@ -2,6 +2,7 @@
     header('Access-Control-Allow-Origin: *');
     header('Content-Type: application/json');
     header('Access-Control-Allow-Methods: POST');
+
     include_once '../../../config/Database.php';
     include_once '../../../models/Client.php';
 
@@ -19,6 +20,7 @@
 		if(! is_null($client->id)) {
 	
 			if($client->delete()) {
+
 			echo json_encode(array('message' => 'Client deleted'));
 			} else {
 			echo json_encode(array('message' => 'Client Not deleted, try again!'));

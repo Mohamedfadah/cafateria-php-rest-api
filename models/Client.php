@@ -10,8 +10,6 @@ class Client
     public $pass;
     public $email;
 
-
-
     public function __construct($db)
     {
         $this->conn = $db;
@@ -36,6 +34,7 @@ class Client
             $this->id = $row['id'];
             $this->name = $row['name'];
             $this->username = $row['username'];
+
             $this->pass = $row['pass'];
             $this->email = $row['email'];
 
