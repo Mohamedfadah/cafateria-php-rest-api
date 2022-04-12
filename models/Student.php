@@ -3,11 +3,13 @@
 class Student {
 
     private $conn;
-    
     public $id;
     public $name;
-    public $address;
-    public $age;
+    public $username;
+    public $pass;
+    public $email;
+    public $role;
+
 
     public function __construct($db){
         $this->conn = $db;
@@ -15,7 +17,7 @@ class Student {
 
     public function fetchAll() {
         
-        $stmt = $this->conn->prepare('SELECT * FROM students');
+        $stmt = $this->conn->prepare('SELECT * FROM customer');
         $stmt->execute();
         return $stmt;
     }
