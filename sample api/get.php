@@ -22,7 +22,8 @@
             while($row = $res->fetch(PDO::FETCH_ASSOC)) {
 
                 extract($row);
-                array_push($students, array( 'id' => $id, 'name' => $name, 'address' => $address, 'age' => $age));
+  
+                array_push($students, array( 'id' => $id, 'name' => $name, 'username' => $username, 'pass' => $pass,'email'=>$email,'role'=>$role));
             }
             
             echo json_encode($students);
