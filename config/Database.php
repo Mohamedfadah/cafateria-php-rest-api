@@ -2,11 +2,12 @@
 
 class Database
 {
-    private $host = "localhost";
-    private $user = "root";
-    private $db = "cafetria";
-    private $pwd = "MOhammed1994";
+    private $host = "109.106.246.1";
+    private $user = "u635309332_afateria_root";
+    private $db = "u635309332_cafateria_proj";
+    private $pwd = "Cafateria123#";
     private $conn = null;
+
 
     public function connect()
     {

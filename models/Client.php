@@ -6,8 +6,9 @@ class Client
     
     public $id;
     public $name;
-    public $address;
-    public $age;
+    public $username;
+    public $pass;
+    public $email;
 
     public function __construct($db)
     {
@@ -32,9 +33,11 @@ class Client
 
             $this->id = $row['id'];
             $this->name = $row['name'];
-            $this->address = $row['username'];
+            $this->username = $row['username'];
+
             $this->pass = $row['pass'];
             $this->email = $row['email'];
+            $this->img = $row['img'];
 
             return true;
         }
@@ -50,6 +53,7 @@ class Client
         $stmt->bindParam(':username', $this->username);
         $stmt->bindParam(':pass', $this->pass);
         $stmt->bindParam(':email', $this->email);
+        // $stmt->bindParam(':img', $this->img);
 
         if ($stmt->execute()) {
             return true;
@@ -60,13 +64,29 @@ class Client
 
     public function putData()
     {
-        $stmt = $this->conn->prepare('UPDATE client SET name = :name, username = :username, pass = :pass, email = :email WHERE id = :id');
+        $stmt = $this->conn->prepare('UPDATE client SET name = :name, username = :username, pass = :pass, email = :email ,img=:img WHERE id = :id');
 
+        $stmt->bindParam(':id', $this->id);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':username', $this->username);
         $stmt->bindParam(':pass', $this->pass);
         $stmt->bindParam(':email', $this->email);
+        $stmt->bindParam(':img', $this->img);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+    }
+    public function uploadimg()
+    {
+        $stmt = $this->conn->prepare('UPDATE client SET img = :img WHERE id = :id');
+
         $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':username', $this->username);
+        $stmt->bindParam(':pass', $this->pass);
+        $stmt->bindParam(':email', $this->email);
+        $stmt->bindParam(':img', $this->img);
 
         if ($stmt->execute()) {
             return true;

@@ -4,26 +4,25 @@
     header('Access-Control-Allow-Methods: POST');
 
     include_once '../../../config/Database.php';
-    include_once '../../../models/Client.php';
+    include_once '../../../models/Order.php';
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db = new Database();
         $db = $db->connect();
 
-        $client = new Client($db);
+        $order = new Order($db);
 
         $data = json_decode(file_get_contents("php://input"));
 
-        $client->name = $data->name;
-        $client->username = $data->username;
-        $client->pass = $data->pass;
-        $client->email = $data->email;
-        // $client->img = $data->img;
+        $order->status = $data->status;
+        $order->price = $data->price;
+        $order->customer_id = $data->customer_id;
+        
     
-        if ($client->postData()) {
-            echo json_encode(array('message' => 'Client added'));
+        if ($order->postData()) {
+            echo json_encode(array('message' => 'Order added'));
         } else {
-            echo json_encode(array('message' => 'Client Not added, try again!'));
+            echo json_encode(array('message' => 'Order Not added, try again!'));
         }
     } else {
         echo json_encode(array('message' => "Error: incorrect Method!"));

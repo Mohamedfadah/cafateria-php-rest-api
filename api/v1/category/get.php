@@ -2,32 +2,27 @@
     header('Access-Control-Allow-Origin: *');
     header('Content-Type: application/json');
 
-    include_once '../config/Database.php';
-    include_once '../models/Student.php';
+    include_once '../../../config/Database.php';
+    include_once '../../../models/Category.php';
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-
         $db = new Database();
         $db = $db->connect();
 
-        $student = new Student($db);
+        $category = new Category($db);
 
-        $res = $student->fetchAll();
+        $res = $category->fetchAll();
         $resCount = $res->rowCount();
 
-        if($resCount > 0) {
+        if ($resCount > 0) {
+            $category = array();
 
-            $students = array();
-
-            while($row = $res->fetch(PDO::FETCH_ASSOC)) {
-
+            while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
                 extract($row);
-  
-                array_push($students, array( 'id' => $id, 'name' => $name, 'username' => $username, 'pass' => $pass,'email'=>$email,'role'=>$role));
+                array_push($category, array( 'id' => $id, 'name' => $name));
             }
             
-            echo json_encode($students);
-
+            echo json_encode($category);
         } else {
             echo json_encode(array('message' => "No records found!"));
         }
