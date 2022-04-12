@@ -1,19 +1,20 @@
 <?php
 
-class Database {
+class Database
+{
     private $host = "localhost";
     private $user = "root";
-    private $db = "studentdb";
-    private $pwd = "";
-    private $conn = NULL;
+    private $db = "proj-test";
+    private $pwd = "root";
+    private $conn = null;
 
-    public function connect() {
-
-        try{
+    public function connect()
+    {
+        try {
             $this->conn = new PDO("mysql:host=$this->host;dbname=$this->db", $this->user, $this->pwd);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch(PDOException $exp) {
-            echo "Connection Error: " . $e->getMessage();
+        } catch (PDOException $exp) {
+            echo "Connection Error: " . $exp->getMessage();
         }
 
         return $this->conn;
