@@ -4,11 +4,7 @@
     header('Access-Control-Allow-Methods: POST');
 
     include_once '../../../config/Database.php';
-<<<<<<< HEAD
-    include_once '../../models/Client.php';
-=======
     include_once '../../../models/Client.php';
->>>>>>> 529914e4170535835682d43b563cb1fb32ca6d67
 
 	if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 
@@ -25,9 +21,9 @@
 	
 			if($client->delete()) {
 
-			echo json_encode(array('message' => 'Client deleted'));
+				echo json_encode(array('message' => 'Client deleted'));
 			} else {
-			echo json_encode(array('message' => 'Client Not deleted, try again!'));
+				echo json_encode(array('message' => 'Client Not deleted, try again!'));
 			}
 		} else {
 		echo json_encode(array('message' => "Error: Client ID is missing!"));

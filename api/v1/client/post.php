@@ -18,7 +18,8 @@
         $client->username = $data->username;
         $client->pass = $data->pass;
         $client->email = $data->email;
-        // $client->img = $data->img;
+        $client->avatar = $client->storage_client_path . "avatar.jpg";
+
     
         if ($client->postData()) {
             echo json_encode(array('message' => 'Client added'));

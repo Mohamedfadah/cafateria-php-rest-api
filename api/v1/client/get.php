@@ -19,7 +19,7 @@
 
             while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
                 extract($row);
-                array_push($client, array( 'id' => $id, 'name' => $name, 'username' => $username, 'pass' => $pass, 'email' => $email));
+                array_push($client, array( 'id' => $id, 'name' => $name, 'username' => $username, 'pass' => $pass, 'email' => $email,'avatar' => $avatar));
             }
             
             echo json_encode($client);

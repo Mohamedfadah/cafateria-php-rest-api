@@ -22,7 +22,9 @@
                     'name' => $client->name,
                     'username' => $client->username,
                     'pass' => $client->pass,
-                    'email' => $client->email
+                    'email' => $client->email,
+                    'avatar' => $client->avatar
+
                 )));
             } else {
                 echo json_encode(array('message' => "No records found!"));

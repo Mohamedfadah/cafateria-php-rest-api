@@ -4,11 +4,7 @@
     header('Access-Control-Allow-Methods: POST');
 
     include_once '../../../config/Database.php';
-<<<<<<< HEAD
-    include_once '../../../models/Student.php';
-=======
     include_once '../../../models/Client.php';
->>>>>>> 529914e4170535835682d43b563cb1fb32ca6d67
 
     if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
@@ -24,8 +20,10 @@
 		$client->username = $data->username;
         $client->pass = $data->pass;
         $client->email = $data->email;
+		// $client->avatar = $data->avatar;
 
-		if(! is_null($client->id)) {
+
+		if(!is_null($client->id) && $client->fetchOne() ) {
 
 			if($client->putData()) {
 
