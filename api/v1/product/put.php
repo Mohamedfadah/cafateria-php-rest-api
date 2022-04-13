@@ -15,12 +15,20 @@
 		$product = new Product($db);
 
 		$data = json_decode(file_get_contents("php://input"));
+		
+        $filename= $_FILES["image"]["name"];
+        $tmp_name= $_FILES["image"]["tmp_name"];
 
+        move_uploaded_file($tmp_name, "images/".$filename );
+        $avatar = "images/".$filename;
+		
 		$product->id = isset($data->id) ? $data->id : NULL;
 		$product->name = $data->name;
 		$product->price = $data->price;
 		$product->status = $data->status;
 		$product->cat_id = $data->cat_id;
+		$product->avatar = $data->avatar;
+
 
 
 		if(! is_null($product->id)) {

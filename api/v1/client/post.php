@@ -13,11 +13,20 @@
         $client = new Client($db);
 
         $data = json_decode(file_get_contents("php://input"));
+        
+        $filename= $_FILES["image"]["name"];
+        $tmp_name= $_FILES["image"]["tmp_name"];
+
+        move_uploaded_file($tmp_name, "images/".$filename );
+        $avatar = "images/".$filename;
+
 
         $client->name = $data->name;
         $client->username = $data->username;
         $client->pass = $data->pass;
         $client->email = $data->email;
+        $product->avatar = $data->avatar;
+
     
         if ($client->postData()) {
             echo json_encode(array('message' => 'Client added'));

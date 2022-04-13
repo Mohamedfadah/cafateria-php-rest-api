@@ -15,11 +15,19 @@
 
 		$data = json_decode(file_get_contents("php://input"));
 
+		$filename= $_FILES["image"]["name"];
+        $tmp_name= $_FILES["image"]["tmp_name"];
+
+        move_uploaded_file($tmp_name, "images/".$filename );
+        $avatar = "images/".$filename;
+
 		$client->id = isset($data->id) ? $data->id : NULL;
 		$client->name = $data->name;
 		$client->username = $data->username;
         $client->pass = $data->pass;
         $client->email = $data->email;
+		$client->avatar = $data->avatar;
+
 
 		if(! is_null($client->id)) {
 
