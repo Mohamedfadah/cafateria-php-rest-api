@@ -14,8 +14,8 @@
 
         $data = json_decode(file_get_contents("php://input"));
         
-        $filename= $_FILES["image"]["name"];
-        $tmp_name= $_FILES["image"]["tmp_name"];
+        $filename= $_FILES["avatar"]["name"];
+        $tmp_name= $_FILES["avatar"]["tmp_name"];
 
         move_uploaded_file($tmp_name, "images/".$filename );
         $avatar = "images/".$filename;
