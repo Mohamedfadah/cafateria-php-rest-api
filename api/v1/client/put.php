@@ -20,8 +20,10 @@
 		$client->username = $data->username;
         $client->pass = $data->pass;
         $client->email = $data->email;
+		// $client->avatar = $data->avatar;
 
-		if(! is_null($client->id)) {
+
+		if(!is_null($client->id) && $client->fetchOne() ) {
 
 			if($client->putData()) {
 

@@ -9,6 +9,7 @@ class Product
     public $price;
     public $status;
     public $cat_id;
+    public $avatar;
 
 
     public function __construct($db)
@@ -37,6 +38,7 @@ class Product
             $this->price = $row['price'];
             $this->status = $row['status'];
             $this->cat_id = $row['cat_id'];
+            $this->avatar = $row['avatar'];
 
             return true;
         }
@@ -46,12 +48,13 @@ class Product
 
     public function postData()
     {
-        $stmt = $this->conn->prepare('INSERT INTO product SET name = :name, price = :price, status = :status, cat_id = :cat_id');
+        $stmt = $this->conn->prepare('INSERT INTO product SET name = :name, price = :price, status = :status, cat_id = :cat_id, avatar = :avatar');
 
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':price', $this->price);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':cat_id', $this->cat_id);
+        $stmt->bindParam(':avatar', $this->avatar);
 
         if ($stmt->execute()) {
             return true;
@@ -62,12 +65,13 @@ class Product
 
     public function putData()
     {
-        $stmt = $this->conn->prepare('UPDATE product SET name = :name, price = :price, status = :status, cat_id = :cat_id WHERE id = :id');
+        $stmt = $this->conn->prepare('UPDATE product SET name = :name, price = :price, status = :status, cat_id = :cat_id ,avatar = :avatar WHERE id = :id');
 
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':price', $this->price);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':cat_id', $this->cat_id);
+        $stmt->bindParam(':avatar', $this->avatar);
         $stmt->bindParam(':id', $this->id);
 
         if ($stmt->execute()) {

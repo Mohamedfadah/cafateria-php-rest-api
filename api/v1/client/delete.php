@@ -21,9 +21,9 @@
 	
 			if($client->delete()) {
 
-			echo json_encode(array('message' => 'Client deleted'));
+				echo json_encode(array('message' => 'Client deleted'));
 			} else {
-			echo json_encode(array('message' => 'Client Not deleted, try again!'));
+				echo json_encode(array('message' => 'Client Not deleted, try again!'));
 			}
 		} else {
 		echo json_encode(array('message' => "Error: Client ID is missing!"));
