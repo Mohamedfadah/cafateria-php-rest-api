@@ -1,7 +1,10 @@
 <?php
     require_once "../../../config/Rest.php";
     require_once "../../../utils/jwt.php";
+    require_once "../../../models/Order.php";
+    require_once "../../../models/Client.php";
     require_once "../../../models/Product.php";
+    require_once "../../../models/Product_Order.php";
 
     class Api extends Rest
     {
@@ -10,31 +13,131 @@
             parent::__construct();
         }
 
-        public function getAllProds()
+        public function getAllOrders()
         {
-            $prod = new Product;
-            $prods = $prod->getAllProds();
+            $order = new Order;
+            $orders = $order->getAllOrders();
 
-            if (!is_array($prods)) {
+            if (!is_array($orders)) {
                 $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products.']);
             }
 
-            $this->returnResponse(SUCCESS_RESPONSE, $prods);
+            $this->returnResponse(SUCCESS_RESPONSE, $orders);
         }
 
-        public function getProdsByCat()
+        public function getOrderById()
         {
-            $cat_id = $this->validateParameter('cat_id', $this->param['cat_id'], INTEGER);
+            $orderId = $this->validateParameter('id', $this->param['id'], INTEGER);
 
-            $prod = new Product;
-            $prod->setCat_id($cat_id);
-            $prods = $prod->getProdDetailsByCat();
+            $order = new Order;
+            $order->setId($orderId);
+            $orders = $order->getOrderById();
 
-            if (!is_array($prods)) {
+            if (!is_array($orders)) {
                 $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products.']);
             }
 
-            $this->returnResponse(SUCCESS_RESPONSE, $prods);
+            $this->returnResponse(SUCCESS_RESPONSE, $orders);
+        }
+
+        public function getOrdersByClientId()
+        {
+            $client_id = $this->validateParameter('customer_id', $this->param['customer_id'], INTEGER);
+
+            $order = new Order;
+            $order->setCustomer_id($client_id);
+            $orders = $order->getAllOrdersByClientId();
+
+            if (!is_array($orders)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products.']);
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $orders);
+        }
+
+        public function getLastOrderByClientId()
+        {
+            $client_id = $this->validateParameter('customer_id', $this->param['customer_id'], INTEGER);
+
+            $order = new Order;
+            $order->setCustomer_id($client_id);
+            $orders = $order->getLastOrderByClientId();
+
+            if (!is_array($orders)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products.']);
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $orders);
+        }
+
+        public function getProductsOfLastOrderByClientId()
+        {
+            $client_id = $this->validateParameter('customer_id', $this->param['customer_id'], INTEGER);
+
+            $order = new Order;
+            $order->setCustomer_id($client_id);
+            $orders = $order->getLastOrderByClientId();
+
+            if (!is_array($orders)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products.']);
+            }
+
+            $product_order = new Product_Order;
+            $product_order->setOrder_id($orders["id"]);
+            $products = $product_order->getProdsOrdersDetailsByOrderId();
+
+            $this->returnResponse(SUCCESS_RESPONSE, $products);
+        }
+
+        public function getProductsDetailsOfLastOrderByClientId()
+        {
+            $client_id = $this->validateParameter('customer_id', $this->param['customer_id'], INTEGER);
+
+            $order = new Order;
+            $order->setCustomer_id($client_id);
+            $orders = $order->getLastOrderByClientId();
+
+            if (!is_array($orders)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products.']);
+            }
+
+            $product_order = new Product_Order;
+            $product_order->setOrder_id($orders["id"]);
+            $products = $product_order->getProdsOrdersDetailsByOrderId();
+
+            if (!is_array($products)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products in order.']);
+            }
+
+            $prod = new Product();
+            foreach ($products as $pro) {
+                $prod->fillInIds($pro["product_id"]);
+            }
+
+            $finalProducts = $prod->getProdsIn();
+            if (!is_array($finalProducts)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products.']);
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $finalProducts);
+        }
+
+        public function getProductsDetailsOfOrdersBetweenByClientId()
+        {
+            $client_id = $this->validateParameter('customer_id', $this->param['customer_id'], INTEGER);
+            $start = $this->validateParameter('start', $this->param['start'], STRING);
+            $end = $this->validateParameter('end', $this->param['end'], STRING);
+
+            $order = new Order;
+            $order->setCustomer_id($client_id);
+            $order->setBoundaryOfTime($start, $end);
+            $orders = $order->getOrdersByTimeBoundary();
+
+            if (!is_array($orders)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products.']);
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $orders);
         }
 
         public function getProdDetails()
@@ -57,50 +160,113 @@
             $this->returnResponse(SUCCESS_RESPONSE, $response);
         }
 
-        public function addProd()
+        private function checkClientExist($cust_id)
         {
-            $name = $this->validateParameter('name', $this->param['name'], STRING);
-            $price = $this->validateParameter('price', $this->param['price'], INTEGER);
-            $status = $this->validateParameter('status', $this->param['status'], INTEGER);
-            $cat_id = $this->validateParameter('cat_id', $this->param['cat_id'], INTEGER);
-            $avatar = "avatar.jpg";
+            $cust = new Client;
+            $cust->setId($cust_id);
+            $client = $cust->getClientDetailsById();
 
-            $status > 0? $status = 1 : $status = 0;
+            return is_array($client);
+        }
 
-            $prod = new Product();
-            $prod->setName($name);
-            $prod->setPrice($price);
-            $prod->setStatus($status);
-            $prod->setAvatar($avatar);
-            $prod->setCat_id($cat_id);
+        private function checkProductsExist($data)
+        {
+            $message = null;
+            $prod = new Product;
+            foreach ($data as $product) {
+                $this->validateParameter('prod_id', $product['prod_id'], INTEGER);
+                $this->validateParameter('quantity', $product['quantity'], INTEGER);
+                $this->validateParameter('price', $product['price'], INTEGER);
+                    
+                $prod->setId($product['prod_id']);
+                if (!$prod->getProdDetailsById()) {
+                    $message = 'Product not found.';
+                    return $message;
+                }
+            }
+            return $message;
+        }
 
-            if (!$prod->insert()) {
+        private function checkDataExist($data)
+        {
+            $message = null;
+            if (!isset($data)) {
+                $message = "Data must be Exist.";
+            } elseif (!is_array($data)) {
+                $message = "Data must be in array.";
+            } elseif (count($data) == 0) {
+                $message = 'You didn\'t choose any product for order.';
+            }
+            return $message? $message : $this->checkProductsExist($data);
+        }
+
+        public function addOrder()
+        {
+            $messageOfExistData = $this->checkDataExist($this->param['data']);
+            if ($messageOfExistData != null) {
+                $this->returnResponse(SUCCESS_RESPONSE, $messageOfExistData);
+            }
+            
+            $cust_id = $this->validateParameter('customer_id', $this->param['customer_id'], INTEGER);
+            $totalPrice = $this->validateParameter('price', $this->param['price'], INTEGER);
+            $note = isset($this->param['note'])? $this->param['note'] : "";
+
+            // Start Check the Customer is exist or not
+            if (!$this->checkClientExist($cust_id)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no clients.']);
+            }
+
+            // Add Order
+            $date = date('Y-m-d H:i:s');
+            $order = new Order;
+            $order->setCustomer_id($cust_id);
+            $order->setDate($date);
+            $order->setStatus(0);
+            $order->setPrice($totalPrice);
+            $order->setNote($note);
+
+            if (!$order->insert()) {
+                $message = 'Failed to insert.';
+                $this->returnResponse(SUCCESS_RESPONSE, $message);
+            }
+
+            $newOrder = $order->getOrderByTime();
+            if (!$newOrder) {
+                $message = 'Can\'t get The Order.';
+                $this->returnResponse(SUCCESS_RESPONSE, $message);
+            }
+
+            $data = $this->param['data'];
+            $prod_order = new Product_Order;
+            $prod_order->setOrder_id($newOrder["id"]);
+            foreach ($data as $product) {
+                $prod_order->push($product['prod_id'], $product['quantity'], $product['price']);
+            }
+
+            if (!$prod_order->insert()) {
                 $message = 'Failed to insert.';
             } else {
-                $message = "Inserted successfully.";
+                $message = "Products Inserted successfully.";
             }
 
             $this->returnResponse(SUCCESS_RESPONSE, $message);
         }
 
-        public function updateProd()
+        public function updateStatus()
         {
             $id = $this->validateParameter('id', $this->param['id'], INTEGER);
-            $name = $this->validateParameter('name', $this->param['name'], STRING);
-            $price = $this->validateParameter('price', $this->param['price'], INTEGER);
             $status = $this->validateParameter('status', $this->param['status'], INTEGER);
-            $cat_id = $this->validateParameter('cat_id', $this->param['cat_id'], INTEGER);
-            // $avatar = "avatar.jpg";
+            
+            $order = new Order();
+            $order->setId($id);
+            $order->setStatus($status);
 
-            $prod = new Product();
-            $prod->setId($id);
-            $prod->setName($name);
-            $prod->setPrice($price);
-            $prod->setStatus($status);
-            $prod->setCat_id($cat_id);
-            // $cust->setAvatar($avatar);
-
-            if (!$prod->update()) {
+            if (!$order->getOrderById()) {
+                $message = 'Order not found.';
+                $this->returnResponse(SUCCESS_RESPONSE, $message);
+            }
+            
+            if (!$order->updateStatus()) {
                 $message = 'Failed to update.';
             } else {
                 $message = "Updated successfully.";
@@ -109,14 +275,19 @@
             $this->returnResponse(SUCCESS_RESPONSE, $message);
         }
 
-        public function deleteProd()
+        public function deleteOrder()
         {
             $id = $this->validateParameter('id', $this->param['id'], INTEGER);
 
-            $prod = new Product();
-            $prod->setId($id);
+            $order = new Order();
+            $order->setId($id);
 
-            if (!$prod->delete()) {
+            if (!$order->getOrderById()) {
+                $message = 'Order not found.';
+                $this->returnResponse(SUCCESS_RESPONSE, $message);
+            }
+
+            if (!$order->delete()) {
                 $message = 'Failed to delete.';
             } else {
                 $message = "Deleted successfully.";
@@ -125,3 +296,4 @@
             $this->returnResponse(SUCCESS_RESPONSE, $message);
         }
     }
+        //////////////////////////////////////////////////////////////

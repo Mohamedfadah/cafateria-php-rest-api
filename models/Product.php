@@ -12,6 +12,7 @@ class Product
     public $avatar;
     public $catId;      // category id
     public $storage_prod_path;
+    public $selectIds;
     private $tableName = 'product';
 
 
@@ -71,6 +72,7 @@ class Product
         
         $this->conn = $db->connect();
         $this->storage_prod_path = "http://localhost:8080/Cafetria/storage/product_avatar/";
+        $this->selectIds = array();
     }
 
     public function getAllProds()
@@ -100,6 +102,22 @@ class Product
         $stmt->bindParam(':name', $this->name);
         $stmt->execute();
         $prods = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $prods;
+    }
+
+    public function fillInIds($id)
+    {
+        array_push($this->selectIds, $id);
+    }
+
+    public function getProdsIn()
+    {
+        var_dump($this->selectIds);
+        $sql = "SELECT * FROM " . $this->tableName . " WHERE id IN (" . implode(',', $this->selectIds) . ")";
+ 
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $prods = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $prods;
     }
 
