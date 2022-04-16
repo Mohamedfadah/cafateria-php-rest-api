@@ -42,6 +42,19 @@
             }
         }
 
+        public function getClientByToken()
+        {
+            $client = new Client();
+            $client->setId($this->userId);
+            $client = $client->getClientDetailsById();
+
+            if (!is_array($client)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no clients with this id.']);
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $client);
+        }
+
         public function getAllClients()
         {
             $cust = new Client;

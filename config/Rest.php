@@ -52,17 +52,30 @@
                 $this->throwError(REQUEST_CONTENTTYPE_NOT_VALID, 'Request content type is not valid');
             }
 
-            $data = json_decode($this->request, true);
-
+            $data = json_decode($this->request, true, 512);
+            // $data = json_decode(html_entity_decode(stripslashes($this->request)), true);
+            // var_dump($data);
             if (!isset($data['name']) || $data['name'] == "") {
                 $this->throwError(API_NAME_REQUIRED, "API name is required.");
             }
             $this->serviceName = $data['name'];
-
+            // echo $this->serviceName;
+            if (is_string($data['param'])) {
+                $data['param'] = json_decode($data['param'], true);
+            }
+            // $this->throwError(API_PARAM_REQUIRED, gettype($data['param']));
             if (!is_array($data['param'])) {
                 $this->throwError(API_PARAM_REQUIRED, "API PARAM is required.");
             }
             $this->param = $data['param'];
+
+
+            // $data['param'] = json_decode($data['param'], true);
+            
+                // if (!is_array($data['param'])) {
+                //     $this->throwError(API_PARAM_REQUIRED, "API PARAM is required." . $data['param']);
+                // }
+                // $this->param = $data['param'];
         }
 
         public function validateParameter($fieldName, $value, $dataType, $required = true)
@@ -126,7 +139,7 @@
                 $api = new API;
 
                 $rMethod = new reflectionMethod('API', $this->serviceName);
-                echo $this->serviceName;
+                // echo $this->serviceName;
                 if (!method_exists($api, $this->serviceName)) {
                     $this->throwError(API_DOST_NOT_EXIST, "API does not exist.");
                 }
@@ -148,7 +161,7 @@
         public function returnResponse($code, $data)
         {
             header("content-type: application/json");
-            $response = json_encode(['resonse' => ['status' => $code, "result" => $data]]);
+            $response = json_encode(['response' => ['status' => $code, "result" => $data]]);
             echo $response;
             exit;
         }
