@@ -112,7 +112,7 @@ class Product
 
     public function getProdsIn()
     {
-        var_dump($this->selectIds);
+        // var_dump($this->selectIds);
         $sql = "SELECT * FROM " . $this->tableName . " WHERE id IN (" . implode(',', $this->selectIds) . ")";
  
         $stmt = $this->conn->prepare($sql);

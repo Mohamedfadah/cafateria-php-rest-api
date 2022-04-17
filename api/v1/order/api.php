@@ -98,7 +98,7 @@
             $orders = $order->getLastOrderByClientId();
 
             if (!is_array($orders)) {
-                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products.']);
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products 1.']);
             }
 
             $product_order = new Product_Order;
@@ -116,7 +116,7 @@
 
             $finalProducts = $prod->getProdsIn();
             if (!is_array($finalProducts)) {
-                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products.']);
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products 2.']);
             }
 
             $this->returnResponse(SUCCESS_RESPONSE, $finalProducts);

@@ -35,7 +35,8 @@
 
                 $token = JWT::encode($payload, SECRETE_KEY);
                 
-                $data = ['token' => $token];
+                //TODO:: role here
+                $data = ['token' => $token, 'role' => $user['role']];
                 $this->returnResponse(SUCCESS_RESPONSE, $data);
             } catch (Exception $e) {
                 $this->throwError(JWT_PROCESSING_ERROR, $e->getMessage());
