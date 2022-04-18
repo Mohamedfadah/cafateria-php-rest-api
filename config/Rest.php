@@ -214,7 +214,11 @@
                 // Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
                 $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
                 // var_dump($requestHeaders);
+<<<<<<< HEAD
                 $requestHeaders['Authorization'] = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NTAyODAyNzYsImlzcyI6ImxvY2FsaG9zdCIsImV4cCI6MTY1NTQ2NDI3NiwidXNlcklkIjoiMyIsInJvbGUiOiIwIn0.ZTQg2JZgMUOsCgMZryvOa0TxWfj_k7mLqVqOLR2EGnM";
+=======
+                $requestHeaders['Authorization'] = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NTAxOTM3MzUsImlzcyI6ImxvY2FsaG9zdCIsImV4cCI6MTY1MDI4MDEzNSwidXNlcklkIjoiMyIsInJvbGUiOiIwIn0.3d7zgcFVmrpwrx5dG5366p1XGrV34_QoYeWNTsaorrc";
+>>>>>>> d86792eba9c9d247a7da465897b8a512ffec2eb2
             
                 // echo "bbbbbbbbbbbbbbbbbbbbb";
                 if (isset($requestHeaders['Authorization'])) {
