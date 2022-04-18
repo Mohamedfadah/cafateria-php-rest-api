@@ -98,7 +98,7 @@
             $orders = $order->getLastOrderByClientId();
 
             if (!is_array($orders)) {
-                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products.']);
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products 1.']);
             }
 
             $product_order = new Product_Order;
@@ -116,11 +116,66 @@
 
             $finalProducts = $prod->getProdsIn();
             if (!is_array($finalProducts)) {
-                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products.']);
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products 2.']);
             }
 
             $this->returnResponse(SUCCESS_RESPONSE, $finalProducts);
         }
+        
+        public function getProductsDetailsOfSpecificOrder()
+        {
+            $order_id = $this->validateParameter('order_id', $this->param['order_id'], INTEGER);
+
+            $product_order = new Product_Order;
+            $product_order->setOrder_id($order_id);
+            $products = $product_order->getProdsOrdersDetailsByOrderId();
+
+            if (!is_array($products)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products in order.']);
+            }
+
+            $prod = new Product();
+            foreach ($products as $pro) {
+                $prod->fillInIds($pro["product_id"]);
+            }
+
+            $finalProducts = $prod->getProdsIn();
+            if (!is_array($finalProducts)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products 2.']);
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $finalProducts);
+        }
+        
+        public function getProductsOrderOfSpecificOrder()
+        {
+            $order_id = $this->validateParameter('order_id', $this->param['order_id'], INTEGER);
+
+            $product_order = new Product_Order;
+            $product_order->setOrder_id($order_id);
+            $products = $product_order->getProdsOrdersDetailsByOrderId();
+
+            if (!is_array($products)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products in order.']);
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $products);
+        }
+        
+        // public function getProductsDetailsOfOrderProduct()
+        // {
+        //     $o_p_id = $this->validateParameter('$id', $this->param['id'], INTEGER);
+
+        //     $product_order = new Product_Order;
+        //     $product_order->setOrder_id($o_p_id);
+        //     $products = $product_order->getProdsDetailsByProdOrderId();
+
+        //     if (!is_array($products)) {
+        //         $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products in order.']);
+        //     }
+
+        //     $this->returnResponse(SUCCESS_RESPONSE, $products);
+        // }
 
         public function getProductsDetailsOfOrdersBetweenByClientId()
         {

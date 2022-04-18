@@ -28,14 +28,15 @@
                 $payload = [
                     'iat' => time(),
                     'iss' => 'localhost',
-                    'exp' => time() + (24*60*60),
+                    'exp' => time() + (60*24*60*60),
                     'userId' => $user['id'],
                     'role' => $user['role']
                 ];
 
                 $token = JWT::encode($payload, SECRETE_KEY);
                 
-                $data = ['token' => $token];
+                //TODO:: role here
+                $data = ['token' => $token, 'role' => $user['role']];
                 $this->returnResponse(SUCCESS_RESPONSE, $data);
             } catch (Exception $e) {
                 $this->throwError(JWT_PROCESSING_ERROR, $e->getMessage());

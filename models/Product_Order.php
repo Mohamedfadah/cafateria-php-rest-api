@@ -99,13 +99,13 @@ class Product_Order
         $prodOrder = $stmt->fetch(PDO::FETCH_ASSOC);
         return $prodOrder;
     }
-
+    
     public function getProdsOrdersDetailsByOrderId()
     {
         $sql = "SELECT * FROM " . $this->tableName . " WHERE order_id = :order_id";
  
         $stmt = $this->conn->prepare($sql);
-        echo $this->order_id;
+        // echo $this->order_id;
         $stmt->bindParam(':order_id', $this->order_id);
         $stmt->execute();
         $prod = $stmt->fetchAll(PDO::FETCH_ASSOC);

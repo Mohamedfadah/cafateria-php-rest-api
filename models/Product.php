@@ -71,7 +71,8 @@ class Product
         $db = $db !== null ? $db : new Database();
         
         $this->conn = $db->connect();
-        $this->storage_prod_path = "http://localhost:8080/Cafetria/storage/product_avatar/";
+        //$this->storage_prod_path = "http://cafeteria.elfabrikaa.online/Cafetria2/storage/product_avatar/";
+        $this->storage_prod_path = "http://localhost:80/c/v3/storage/product_avatar/";
         $this->selectIds = array();
     }
 
@@ -112,7 +113,7 @@ class Product
 
     public function getProdsIn()
     {
-        var_dump($this->selectIds);
+        // var_dump($this->selectIds);
         $sql = "SELECT * FROM " . $this->tableName . " WHERE id IN (" . implode(',', $this->selectIds) . ")";
  
         $stmt = $this->conn->prepare($sql);
@@ -208,7 +209,22 @@ class Product
             return false;
         }
     }
+    
+    public function updateStatus()
+    {
+        $sql = 'UPDATE ' . $this->tableName . ' SET status = :status WHERE id = :id';
 
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':status', $this->status);
+        
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     public function delete()
     {
         $sql = 'DELETE FROM ' . $this->tableName . ' WHERE id = :id';
