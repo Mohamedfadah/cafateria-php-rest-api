@@ -61,7 +61,7 @@ class Client
         $db = $db !== null ? $db : new Database();
         
         $this->conn = $db->connect();
-        $this->storage_client_path = "http://localhost:8080/Cafetria/storage/client_avatar/";
+        $this->storage_client_path = "http://localhost:80/c/v3/storage/client_avatar/";
     }
 
     public function getAllClients()
@@ -70,6 +70,14 @@ class Client
         $stmt->execute();
         $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $clients;
+    }
+
+    public function getTheLastClient()
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM " . $this->tableName . " ORDER BY id DESC LIMIT 1");
+        $stmt->execute();
+        $prod = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $prod;
     }
 
     public function getClientDetailsById()

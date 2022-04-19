@@ -22,6 +22,18 @@
             $this->returnResponse(SUCCESS_RESPONSE, $prods);
         }
 
+        public function getTheLastProd()
+        {
+            $prod = new Product;
+            $prods = $prod->getTheLastProd();
+
+            if (!is_array($prods)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products.']);
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $prods);
+        }
+
         public function getProdsByCat()
         {
             $cat_id = $this->validateParameter('cat_id', $this->param['cat_id'], INTEGER);

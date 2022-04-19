@@ -81,7 +81,7 @@
 
         public function validateRequest()
         {
-            if (!($_SERVER['CONTENT_TYPE'] === 'application/json' || $_SERVER['CONTENT_TYPE'] === 'multipart/form-data')) {
+            if (!($_SERVER['CONTENT_TYPE'] === 'application/json')) {
                 $this->throwError(REQUEST_CONTENTTYPE_NOT_VALID, 'Request content type is not valid');
             }
 

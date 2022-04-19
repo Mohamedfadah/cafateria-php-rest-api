@@ -19,8 +19,7 @@
         parse_str($_SERVER['QUERY_STRING'], $queries);
         if (isset($queries['id'])) {
             $prod->id  = $queries['id'];
-            print_r($prod->getProdDetailsById());
-
+            var_dump($_FILES);
             if ($prod->getProdDetailsById() && isset($_FILES["avatar"]["name"])) {
                 $filename= $_FILES["avatar"]["name"];
             }

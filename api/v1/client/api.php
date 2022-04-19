@@ -68,6 +68,18 @@
             $this->returnResponse(SUCCESS_RESPONSE, $client);
         }
 
+        public function getTheLastClient()
+        {
+            $cust = new Client;
+            $client = $cust->getTheLastClient();
+
+            if (!is_array($client)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no clients.']);
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $client);
+        }
+
         public function getClientDetails()
         {
             $clientId = $this->validateParameter('id', $this->param['id'], INTEGER);
@@ -102,12 +114,14 @@
             $cust->setAvatar($avatar);
 
             if (!$cust->insert()) {
-                $message = 'Failed to insert.';
+                $message =  'Failed to insert.';
+                $errCode = 440;
             } else {
                 $message = "Inserted successfully.";
+                $errCode = 200;
             }
 
-            $this->returnResponse(SUCCESS_RESPONSE, $message);
+            $this->returnResponse($errCode, $message);
         }
 
         public function updateClient()

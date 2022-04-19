@@ -75,13 +75,21 @@ class Product
         $this->storage_prod_path = "http://localhost:80/c/v3/storage/product_avatar/";
         $this->selectIds = array();
     }
-
+    
     public function getAllProds()
     {
         $stmt = $this->conn->prepare("SELECT * FROM " . $this->tableName);
         $stmt->execute();
         $prods = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $prods;
+    }
+
+    public function getTheLastProd()
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM " . $this->tableName . " ORDER BY id DESC LIMIT 1");
+        $stmt->execute();
+        $prod = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $prod;
     }
 
     public function getProdDetailsById()
