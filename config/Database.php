@@ -2,10 +2,15 @@
 
 class Database
 {
-    private $host = "109.106.246.1";
-    private $user = "u635309332_afateria_root";
-    private $db = "u635309332_cafateria_proj";
-    private $pwd = "Cafateria123#";
+    // private $host = "109.106.246.1";
+    // private $user = "u635309332_afateria_root";
+    // private $db = "u635309332_cafateria_proj";
+    // private $pwd = "Cafateria123#";
+
+    private $host = "localhost";
+    private $user = "root";
+    private $db = "cafateria_proj";
+    private $pwd = "";
     private $conn = null;
 
 

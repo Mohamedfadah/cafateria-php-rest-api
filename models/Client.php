@@ -62,6 +62,7 @@ class Client
         
         $this->conn = $db->connect();
         $this->storage_client_path = "http://localhost:80/c/v3/storage/client_avatar/";
+        // $this->storage_client_path = "http://cafeteria.elfabrikaa.online/Cafetria2/storage/client_avatar/";
     }
 
     public function getAllClients()

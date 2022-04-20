@@ -184,6 +184,15 @@ class Order
         return $prods;
     }
 
+    public function getOrderAndClientRelated()
+    {
+        $sql = "SELECT o.id, date, note, price, status, customer_id, c.name from orders o join client c on o.customer_id = c.id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $orders;
+    }
+
     public function getProdDetailsByCat()
     {
         $sql = "SELECT * FROM " . $this->tableName . " WHERE cat_id = :cat_id";

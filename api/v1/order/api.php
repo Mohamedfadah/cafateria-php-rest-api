@@ -194,7 +194,7 @@
 
             $this->returnResponse(SUCCESS_RESPONSE, $orders);
         }
-
+        
         public function getProdDetails()
         {
             $prodId = $this->validateParameter('id', $this->param['id'], INTEGER);
@@ -213,6 +213,21 @@
             $response['avatar'] 	= $product['avatar'];
             $response['cat_id'] 	= $product['cat_id'];
             $this->returnResponse(SUCCESS_RESPONSE, $response);
+        }
+
+        public function getClientDetailsOfOrder()
+        {
+            $customer_id = $this->validateParameter('id', $this->param['id'], INTEGER);
+
+            $client = new Client();
+            $client->setId($customer_id);
+            $client = $client->getClientDetailsById();
+
+            if (!is_array($client)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'Client details not found.']);
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $client);
         }
 
         private function checkClientExist($cust_id)
@@ -305,6 +320,18 @@
             }
 
             $this->returnResponse(SUCCESS_RESPONSE, $message);
+        }
+
+        public function getOrdersWithClientName()
+        {
+            $order = new Order();
+            $orders = $order->getOrderAndClientRelated();
+
+            if (!is_array($orders)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Orders.']);
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $orders);
         }
 
         public function updateStatus()
