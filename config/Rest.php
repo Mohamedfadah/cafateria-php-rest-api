@@ -1,4 +1,13 @@
 <?php
+    header('Access-Control-Allow-Origin: *');
+    header('Content-Type: application/json');
+    header('Access-Control-Allow-Methods: POST');
+    header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
+
+    
+    
+    
+    
     require_once('constants.php');
     require_once('database.php');
     class Rest
@@ -46,19 +55,48 @@
         //     $this->param = $data['param'];
         // }
 
+        public function convertJsonToArray($json)
+        {
+            if (is_array($json)) {
+                return $json;
+            }
+            return json_decode($json, true);
+            // var_dump($json);
+            // if (is_string($json)) {
+            //     $tempJson = json_decode($json, true);
+                
+            //     // var_dump($json);
+            //     if (is_array($tempJson)) {
+            //         $json = $tempJson;
+            //         foreach ($json as $key => $value) {
+            //             $json[$key] = $this->convertJsonToArray($value);
+            //         }
+            //     } else {
+            //         // $json = $tempJson;
+            //         return $tempJson;
+            //     }
+            // }
+            // return $json;
+        }
+
         public function validateRequest()
         {
-            if (!($_SERVER['CONTENT_TYPE'] === 'application/json' || $_SERVER['CONTENT_TYPE'] === 'multipart/form-data')) {
+            if (!($_SERVER['CONTENT_TYPE'] === 'application/json')) {
                 $this->throwError(REQUEST_CONTENTTYPE_NOT_VALID, 'Request content type is not valid');
             }
 
             $data = json_decode($this->request, true);
+            // $data = $this->convertJsonToArray($this->request);
 
             if (!isset($data['name']) || $data['name'] == "") {
                 $this->throwError(API_NAME_REQUIRED, "API name is required.");
             }
             $this->serviceName = $data['name'];
 
+            $data = $this->convertJsonToArray($data);
+            $data['param'] = $this->convertJsonToArray($data['param']);
+            // print_r($data);
+            // echo $data['param'];
             if (!is_array($data['param'])) {
                 $this->throwError(API_PARAM_REQUIRED, "API PARAM is required.");
             }
@@ -126,7 +164,7 @@
                 $api = new API;
 
                 $rMethod = new reflectionMethod('API', $this->serviceName);
-                echo $this->serviceName;
+                // echo $this->serviceName;
                 if (!method_exists($api, $this->serviceName)) {
                     $this->throwError(API_DOST_NOT_EXIST, "API does not exist.");
                 }
@@ -148,7 +186,7 @@
         public function returnResponse($code, $data)
         {
             header("content-type: application/json");
-            $response = json_encode(['resonse' => ['status' => $code, "result" => $data]]);
+            $response = json_encode(['response' => ['status' => $code, "result" => $data]]);
             echo $response;
             exit;
         }
@@ -159,14 +197,26 @@
         public function getAuthorizationHeader()
         {
             $headers = null;
+            // $_SERVER = $this->convertJsonToArray($_SERVER);
             if (isset($_SERVER['Authorization'])) {
+                // echo "rrrrrrrrrrrrrrrrrrrr";
                 $headers = trim($_SERVER["Authorization"]);
             } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
+                // echo "ooooooooooooooo";
+
                 $headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
             } elseif (function_exists('apache_request_headers')) {
+                // print_r(apache_response_headers());
+                // var_dump($_POST);
+
                 $requestHeaders = apache_request_headers();
+                // print_r($requestHeaders);
                 // Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
                 $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+                // var_dump($requestHeaders);
+                $requestHeaders['Authorization'] = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NTAyODAyNzYsImlzcyI6ImxvY2FsaG9zdCIsImV4cCI6MTY1NTQ2NDI3NiwidXNlcklkIjoiMyIsInJvbGUiOiIwIn0.ZTQg2JZgMUOsCgMZryvOa0TxWfj_k7mLqVqOLR2EGnM";
+            
+                // echo "bbbbbbbbbbbbbbbbbbbbb";
                 if (isset($requestHeaders['Authorization'])) {
                     $headers = trim($requestHeaders['Authorization']);
                 }

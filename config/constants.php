@@ -21,6 +21,7 @@
     define('USER_NOT_ACTIVE', 109);
 
     define('SUCCESS_RESPONSE', 200);
+    define('EMAIL_IS_EXISTS', 440);
 
     /*Server Errors*/
 

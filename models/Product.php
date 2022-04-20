@@ -12,6 +12,7 @@ class Product
     public $avatar;
     public $catId;      // category id
     public $storage_prod_path;
+    public $selectIds;
     private $tableName = 'product';
 
 
@@ -70,15 +71,27 @@ class Product
         $db = $db !== null ? $db : new Database();
         
         $this->conn = $db->connect();
-        $this->storage_prod_path = "http://localhost:8080/Cafetria/storage/product_avatar/";
-    }
+        //$this->storage_prod_path = "http://cafeteria.elfabrikaa.online/Cafetria2/storage/product_avatar/";
+        $this->storage_prod_path = "http://localhost:80/c/v3/storage/product_avatar/";
+        // $this->storage_client_path = "http://cafeteria.elfabrikaa.online/Cafetria2/storage/client_avatar/";
 
+        $this->selectIds = array();
+    }
+    
     public function getAllProds()
     {
         $stmt = $this->conn->prepare("SELECT * FROM " . $this->tableName);
         $stmt->execute();
         $prods = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $prods;
+    }
+
+    public function getTheLastProd()
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM " . $this->tableName . " ORDER BY id DESC LIMIT 1");
+        $stmt->execute();
+        $prod = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $prod;
     }
 
     public function getProdDetailsById()
@@ -100,6 +113,22 @@ class Product
         $stmt->bindParam(':name', $this->name);
         $stmt->execute();
         $prods = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $prods;
+    }
+
+    public function fillInIds($id)
+    {
+        array_push($this->selectIds, $id);
+    }
+
+    public function getProdsIn()
+    {
+        // var_dump($this->selectIds);
+        $sql = "SELECT * FROM " . $this->tableName . " WHERE id IN (" . implode(',', $this->selectIds) . ")";
+ 
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $prods = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $prods;
     }
 
@@ -190,7 +219,22 @@ class Product
             return false;
         }
     }
+    
+    public function updateStatus()
+    {
+        $sql = 'UPDATE ' . $this->tableName . ' SET status = :status WHERE id = :id';
 
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':status', $this->status);
+        
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     public function delete()
     {
         $sql = 'DELETE FROM ' . $this->tableName . ' WHERE id = :id';

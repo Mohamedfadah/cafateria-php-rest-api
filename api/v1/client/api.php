@@ -28,24 +28,50 @@
                 $payload = [
                     'iat' => time(),
                     'iss' => 'localhost',
-                    'exp' => time() + (24*60*60),
+                    'exp' => time() + (60*24*60*60),
                     'userId' => $user['id'],
                     'role' => $user['role']
                 ];
 
                 $token = JWT::encode($payload, SECRETE_KEY);
                 
-                $data = ['token' => $token];
+                //TODO:: role here
+                $data = ['token' => $token, 'role' => $user['role']];
                 $this->returnResponse(SUCCESS_RESPONSE, $data);
             } catch (Exception $e) {
                 $this->throwError(JWT_PROCESSING_ERROR, $e->getMessage());
             }
         }
 
+        public function getClientByToken()
+        {
+            $client = new Client();
+            $client->setId($this->userId);
+            $client = $client->getClientDetailsById();
+
+            if (!is_array($client)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no clients with this id.']);
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $client);
+        }
+
         public function getAllClients()
         {
             $cust = new Client;
             $client = $cust->getAllClients();
+
+            if (!is_array($client)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no clients.']);
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $client);
+        }
+
+        public function getTheLastClient()
+        {
+            $cust = new Client;
+            $client = $cust->getTheLastClient();
 
             if (!is_array($client)) {
                 $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no clients.']);
@@ -88,12 +114,14 @@
             $cust->setAvatar($avatar);
 
             if (!$cust->insert()) {
-                $message = 'Failed to insert.';
+                $message =  'Failed to insert.';
+                $errCode = 440;
             } else {
                 $message = "Inserted successfully.";
+                $errCode = 200;
             }
 
-            $this->returnResponse(SUCCESS_RESPONSE, $message);
+            $this->returnResponse($errCode, $message);
         }
 
         public function updateClient()

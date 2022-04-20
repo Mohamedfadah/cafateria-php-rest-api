@@ -22,6 +22,18 @@
             $this->returnResponse(SUCCESS_RESPONSE, $prods);
         }
 
+        public function getTheLastProd()
+        {
+            $prod = new Product;
+            $prods = $prod->getTheLastProd();
+
+            if (!is_array($prods)) {
+                $this->returnResponse(SUCCESS_RESPONSE, ['message' => 'The are no Products.']);
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $prods);
+        }
+
         public function getProdsByCat()
         {
             $cat_id = $this->validateParameter('cat_id', $this->param['cat_id'], INTEGER);
@@ -92,6 +104,8 @@
             $cat_id = $this->validateParameter('cat_id', $this->param['cat_id'], INTEGER);
             // $avatar = "avatar.jpg";
 
+            $status > 0? $status = 1 : $status = 0;
+
             $prod = new Product();
             $prod->setId($id);
             $prod->setName($name);
@@ -101,6 +115,28 @@
             // $cust->setAvatar($avatar);
 
             if (!$prod->update()) {
+                $message = 'Failed to update.';
+            } else {
+                $message = "Updated successfully.";
+            }
+
+            $this->returnResponse(SUCCESS_RESPONSE, $message);
+        }
+        
+        public function updateProdStatus()
+        {
+            $id = $this->validateParameter('id', $this->param['id'], INTEGER);
+            $status = $this->validateParameter('status', $this->param['status'], INTEGER);
+            // $avatar = "avatar.jpg";
+
+            $status > 0? $status = 1 : $status = 0;
+
+            $prod = new Product();
+            $prod->setId($id);
+            $prod->setStatus($status);
+            // $cust->setAvatar($avatar);
+
+            if (!$prod->updateStatus()) {
                 $message = 'Failed to update.';
             } else {
                 $message = "Updated successfully.";

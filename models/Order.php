@@ -1,6 +1,7 @@
 <?php
 
-require_once "Cat.php";
+require_once "Order.php";
+require_once "Client.php";
 class Order
 {
     private $conn;
@@ -12,6 +13,9 @@ class Order
     public $note;
     public $customer_id;      // category id
     private $tableName = 'orders';
+
+    public $startDate;
+    public $endDate;
 
 
     public function setId($id)
@@ -69,8 +73,11 @@ class Order
         $db = $db !== null ? $db : new Database();
         
         $this->conn = $db->connect();
+        $this->startDate="";
+        $this->endDate="";
     }
 
+    // Got
     public function getAllOrders()
     {
         $stmt = $this->conn->prepare("SELECT * FROM " . $this->tableName);
@@ -79,9 +86,68 @@ class Order
         return $orders;
     }
 
+    // Got By Date
+    public function getOrderByTime()
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM " . $this->tableName . " WHERE date = :date");
+        $stmt->bindParam(':date', $this->date);
+
+        $stmt->execute();
+        $order = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $order;
+    }
+
+    public function getOrderById()
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM " . $this->tableName . " WHERE id = :id");
+        $stmt->bindParam(':id', $this->id);
+
+        $stmt->execute();
+        $order = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $order;
+    }
+
+    public function setBoundaryOfTime($start, $end)
+    {
+        $this->startDate = $start;
+        $this->endDate = $end;
+    }
+
+    public function getOrdersByTimeBoundary()
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM " . $this->tableName . " WHERE date BETWEEN :startDate AND :endDate");
+        $stmt->bindParam(':startDate', $this->startDate);
+        $stmt->bindParam(':endDate', $this->endDate);
+
+        $stmt->execute();
+        $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $orders;
+    }
+
+
     public function getAllOrdersByClientId()
     {
-        $sql = "SELECT * FROM " . $this->tableName . " WHERE customer_id = :customer_id";
+        $sql = "SELECT * FROM " . $this->tableName . " WHERE customer_id = :customer_id ORDER BY date DESC";
+ 
+        $client = new Client();
+        $client->setId($this->customer_id);
+        if (!$client->getClientDetailsById()) {
+            return false;
+        }
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':customer_id', $this->customer_id);
+        $stmt->execute();
+        $prod = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $prod;
+    }
+
+    public function getLastOrderByClientId()
+    {
+        $sql = "SELECT * FROM " . $this->tableName . " WHERE customer_id = :customer_id ORDER BY date DESC";
  
         $client = new Client();
         $client->setId($this->customer_id);
@@ -118,6 +184,15 @@ class Order
         return $prods;
     }
 
+    public function getOrderAndClientRelated()
+    {
+        $sql = "SELECT o.id, date, note, price, status, customer_id, c.name from orders o join client c on o.customer_id = c.id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $orders;
+    }
+
     public function getProdDetailsByCat()
     {
         $sql = "SELECT * FROM " . $this->tableName . " WHERE cat_id = :cat_id";
@@ -135,45 +210,23 @@ class Order
         return $prods;
     }
 
+    // Inserted
     public function insert()
     {
-        $sql = 'INSERT INTO ' . $this->tableName . '(name, price, status, avatar, cat_id) VALUES( :name, :price, :status, :avatar, :cat_id)';
+        $sql = 'INSERT INTO ' . $this->tableName . '(date, status, price, note, customer_id) VALUES( :date, :status, :price, :note, :customer_id )';
 
-        if ($this->getProdDetailsByName()) {
-            return false;
-        }
-
-        $cat = new Cat();
-        $cat->setId($this->cat_id);
-        if (!$cat->getCategoryById()) {
+        $client = new Client();
+        $client->setId($this->customer_id);
+        if (!$client->getClientDetailsById()) {
             return false;
         }
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':price', $this->price);
+        $stmt->bindParam(':date', $this->date);
         $stmt->bindParam(':status', $this->status);
-        $stmt->bindParam(':avatar', $this->avatar);
-        $stmt->bindParam(':cat_id', $this->cat_id);
-
-        if ($stmt->execute()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function updateAvatar()
-    {
-        $sql = 'UPDATE ' . $this->tableName . ' SET avatar = :avatar WHERE id = :id';
-
-        if (!isset($this->id) || !isset($this->avatar)) {
-            return false;
-        }
-
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':id', $this->id);
-        $stmt->bindParam(':avatar', $this->avatar);
+        $stmt->bindParam(':price', $this->price);
+        $stmt->bindParam(':note', $this->note);
+        $stmt->bindParam(':customer_id', $this->customer_id);
         
         if ($stmt->execute()) {
             return true;
@@ -182,22 +235,13 @@ class Order
         }
     }
 
-    public function update()
+    public function updateStatus()
     {
-        $sql = 'UPDATE ' . $this->tableName . ' SET name = :name, price = :price, status = :status, cat_id = :cat_id WHERE id = :id';
-
-        $cat = new Cat();
-        $cat->setId($this->cat_id);
-        if (!$cat->getCategoryById()) {
-            return false;
-        }
+        $sql = 'UPDATE ' . $this->tableName . ' SET status = :status WHERE id = :id';
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':id', $this->id);
-        $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':price', $this->price);
         $stmt->bindParam(':status', $this->status);
-        $stmt->bindParam(':cat_id', $this->cat_id);
 
         if ($stmt->execute()) {
             return true;
@@ -213,7 +257,7 @@ class Order
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':id', $this->id);
 
-        if (!$this->getProdDetailsById()) {
+        if (!$this->getOrderById()) {
             return false;
         }
 
