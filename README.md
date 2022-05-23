@@ -30,14 +30,14 @@
 
 1. Well, first clone or download this repo.
 
-2. Create a database and import ***db/studentdb.sql*** file in your database.
+2. Create a database and import ***extra/u635309332_cafateria_proj.sql*** file in your database.
 
 3. Change database configurations in ***config/Database.php*** file.
 
 4. Check your endpoints.
 
   
-
+<!-- 
 ## 📌Endpoints
 
   
@@ -51,7 +51,7 @@
 4.  `http://localhost/php_rest_api_without_framework/api/put.php`
 ![PUT METHOD](https://images2.imgbox.com/20/a2/Lg4U2hNS_o.jpg)
 5.  `http://localhost/php_rest_api_without_framework/api/delete.php`
-![DELETE METHOD](https://images2.imgbox.com/c5/89/2s8M7yr0_o.jpg)
+![DELETE METHOD](https://images2.imgbox.com/c5/89/2s8M7yr0_o.jpg) -->
 ## 📰License
 
   
@@ -71,22 +71,7 @@ Please give me a **star**⭐ to this repo, I'll be happy😊.
 
   
 
-[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white&style=plastic)](https://www.linkedin.com/in/hanoak/)
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white&style=plastic)](https://www.linkedin.com/in/mohamedsabry123/)
 
   
 
-  
-
-[![twitter](https://img.shields.io/badge/twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white&style=plastic)](https://twitter.com/_hanoak)
-
-  
-
-  
-
-[![twitter](https://img.shields.io/badge/YouTube-red?style=for-the-badge&logo=youtube&logoColor=white&style=plastic)](https://www.youtube.com/channel/UCgqAS2Phb6DNyGD-8n7Jg-Q/?sub_confirmation=1)
-
-  
-
-  
-
-[![medium](https://img.shields.io/badge/Medium-000?style=for-the-badge&logo=medium&logoColor=white&style=plastic)](https://medium.com/@hanoak)
